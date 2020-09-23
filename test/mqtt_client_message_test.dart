@@ -614,7 +614,7 @@ void main() {
       final MqttConnectMessage msg = MqttConnectMessage()
           .withClientIdentifier('mark')
           .keepAliveFor(40)
-          .startClean();
+          .startClean(true);
       print('Connect - Basic serialization::${msg.toString()}');
       final typed.Uint8Buffer mb =
           MessageSerializationHelper.getMessageBytes(msg);
@@ -628,7 +628,7 @@ void main() {
           .withProtocolVersion(3)
           .withClientIdentifier('mark')
           .keepAliveFor(30)
-          .startClean()
+          .startClean(true)
           .will()
           .withWillQos(MqttQos.atLeastOnce)
           .withWillRetain()

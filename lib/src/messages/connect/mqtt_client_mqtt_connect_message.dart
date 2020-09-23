@@ -45,8 +45,8 @@ class MqttConnectMessage extends MqttMessage {
 
   /// Sets the startClean flag so that the broker drops any messages
   /// that were previously destined for us.
-  MqttConnectMessage startClean() {
-    variableHeader.connectFlags.cleanStart = true;
+  MqttConnectMessage startClean(bool startClean) {
+    variableHeader.connectFlags.cleanStart = startClean;
     return this;
   }
 

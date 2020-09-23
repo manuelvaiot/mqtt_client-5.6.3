@@ -42,6 +42,9 @@ class MqttClient {
   /// Port number
   int port;
 
+  //Start Clean
+  bool startClean = true;
+
   /// Client identifier
   String clientIdentifier;
 
@@ -53,6 +56,7 @@ class MqttClient {
 
   List<String> _websocketProtocols;
 
+  setStartClean(bool startClean) => this.startClean = startClean;
   /// User definable websocket protocols. Use this for non default websocket
   /// protocols only if your broker needs this. There are two defaults in
   /// MqttWsConnection class, the multiple protocol is the default. Some brokers
@@ -259,7 +263,7 @@ class MqttClient {
           .withWillQos(MqttQos.atMostOnce)
           .keepAliveFor(Constants.defaultKeepAlive)
           .authenticateAs(username, password)
-          .startClean();
+          .startClean(this.startClean);
 
   /// Initiates a topic subscription request to the connected broker
   /// with a strongly typed data processor callback.
