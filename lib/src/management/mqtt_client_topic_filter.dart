@@ -24,7 +24,7 @@ class MqttClientTopicFilter {
   /// Construction
   MqttClientTopicFilter(this._topic, this._clientUpdates) {
     _subscriptionTopic = SubscriptionTopic(_topic);
-    _clientUpdates.listen(_topicIn);
+    _clientUpdates!.listen(_topicIn);
     _updates =
         StreamController<List<MqttReceivedMessage<MqttMessage>>>.broadcast(
             sync: true);
@@ -32,25 +32,25 @@ class MqttClientTopicFilter {
 
   final String _topic;
 
-  SubscriptionTopic _subscriptionTopic;
+  late SubscriptionTopic _subscriptionTopic;
 
   /// The topic on which to filter
   String get topic => _topic;
 
-  final Stream<List<MqttReceivedMessage<MqttMessage>>> _clientUpdates;
+  final Stream<List<MqttReceivedMessage<MqttMessage?>>?>? _clientUpdates;
 
-  StreamController<List<MqttReceivedMessage<MqttMessage>>> _updates;
+  late StreamController<List<MqttReceivedMessage<MqttMessage?>>> _updates;
 
   /// The stream on which all matching topic updates are published to
-  Stream<List<MqttReceivedMessage<MqttMessage>>> get updates => _updates.stream;
+  Stream<List<MqttReceivedMessage<MqttMessage?>>> get updates => _updates.stream;
 
-  void _topicIn(List<MqttReceivedMessage<MqttMessage>> c) {
-    String lastTopic;
+  void _topicIn(List<MqttReceivedMessage<MqttMessage?>>? c) {
+    String? lastTopic;
     try {
       // Pass through if we have a match
-      final List<MqttReceivedMessage<MqttMessage>> tmp =
+      final List<MqttReceivedMessage<MqttMessage?>> tmp =
           <MqttReceivedMessage<MqttMessage>>[];
-      for (final MqttReceivedMessage<MqttMessage> message in c) {
+      for (final MqttReceivedMessage<MqttMessage?> message in c!) {
         lastTopic = message.topic;
         if (_subscriptionTopic.matches(PublicationTopic(message.topic))) {
           tmp.add(message);

@@ -16,7 +16,7 @@ part of mqtt_client;
 class MqttSecureConnection extends MqttConnection {
   /// Default constructor
   MqttSecureConnection(
-      this.context, events.EventBus eventBus, this.onBadCertificate)
+      this.context, events.EventBus? eventBus, this.onBadCertificate)
       : super(eventBus);
 
   /// Initializes a new instance of the MqttSecureConnection class.
@@ -27,10 +27,10 @@ class MqttSecureConnection extends MqttConnection {
   }
 
   /// The security context for secure usage
-  SecurityContext context;
+  SecurityContext? context;
 
   /// Callback function to handle bad certificate. if true, ignore the error.
-  bool Function(X509Certificate certificate) onBadCertificate;
+  bool Function(X509Certificate certificate)? onBadCertificate;
 
   /// Connect
   @override

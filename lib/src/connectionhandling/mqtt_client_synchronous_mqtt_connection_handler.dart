@@ -23,15 +23,15 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
   static const int maxConnectionAttempts = 3;
 
   /// The broker connection acknowledgment timer
-  MqttCancellableAsyncSleep _connectTimer;
+  late MqttCancellableAsyncSleep _connectTimer;
 
   /// The event bus
-  final events.EventBus _clientEventBus;
+  final events.EventBus? _clientEventBus;
 
   /// Synchronously connect to the specific Mqtt Connection.
   @override
   Future<MqttClientConnectionStatus> internalConnect(
-      String hostname, int port, MqttConnectMessage connectMessage) async {
+      String hostname, int? port, MqttConnectMessage connectMessage) async {
     int connectionAttempts = 0;
     MqttLogger.log('SynchronousMqttConnectionHandler::internalConnect entered');
     do {
@@ -68,7 +68,7 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
       _connectTimer = MqttCancellableAsyncSleep(5000);
       await connection.connect(hostname, port);
       registerForMessage(MqttMessageType.connectAck, _connectAckProcessor);
-      _clientEventBus.on<MessageAvailable>().listen(messageAvailable);
+      _clientEventBus!.on<MessageAvailable>().listen(messageAvailable);
       // Transmit the required connection message to the broker.
       MqttLogger.log('SynchronousMqttConnectionHandler::internalConnect '
           'sending connect message');
@@ -113,10 +113,10 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
   }
 
   /// Processes the connect acknowledgement message.
-  bool _connectAckProcessor(MqttMessage msg) {
+  bool _connectAckProcessor(MqttMessage? msg) {
     MqttLogger.log('SynchronousMqttConnectionHandler::_connectAckProcessor');
     try {
-      final MqttConnectAckMessage ackMsg = msg;
+      final MqttConnectAckMessage ackMsg = msg as MqttConnectAckMessage;
       // Drop the connection if our connect request has been rejected.
       if (ackMsg.variableHeader.returnCode ==
               MqttConnectReturnCode.brokerUnavailable ||
@@ -141,7 +141,7 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
         connectionStatus.returnCode = MqttConnectReturnCode.connectionAccepted;
         // Call the connected callback if we have one
         if (onConnected != null) {
-          onConnected();
+          onConnected!();
         }
       }
     } on Exception {

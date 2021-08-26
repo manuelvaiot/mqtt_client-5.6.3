@@ -13,14 +13,14 @@ class Subscription extends Object
         // ignore: prefer_mixin
         observe.Observable<observe.ChangeRecord> {
   /// The message identifier assigned to the subscription
-  int messageIdentifier;
+  int? messageIdentifier;
 
   /// The time the subscription was created.
-  DateTime createdTime;
+  DateTime? createdTime;
 
   /// The Topic that is subscribed to.
-  SubscriptionTopic topic;
+  late SubscriptionTopic topic;
 
   /// The QOS level of the topics subscription
-  MqttQos qos;
+  MqttQos? qos;
 }

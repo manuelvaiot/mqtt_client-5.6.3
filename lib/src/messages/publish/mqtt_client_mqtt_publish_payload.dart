@@ -25,13 +25,13 @@ class MqttPublishPayload extends MqttPayload {
   }
 
   /// Message header
-  MqttHeader header;
+  MqttHeader? header;
 
   /// Variable header
-  MqttPublishVariableHeader variableHeader;
+  MqttPublishVariableHeader? variableHeader;
 
   /// The message that forms the payload of the publish message.
-  typed.Uint8Buffer message;
+  typed.Uint8Buffer? message;
 
   /// Creates a payload from the specified header stream.
   @override
@@ -40,7 +40,7 @@ class MqttPublishPayload extends MqttPayload {
     // a binary chunk of bytes.
     // The length of the bytes is the length specified in the header,
     // minus any bytes spent in the variable header.
-    final int messageBytes = header.messageSize - variableHeader.length;
+    final int messageBytes = header!.messageSize - variableHeader!.length;
     message = payloadStream.read(messageBytes);
   }
 
@@ -52,11 +52,11 @@ class MqttPublishPayload extends MqttPayload {
 
   /// Gets the length of the payload in bytes when written to a stream.
   @override
-  int getWriteLength() => message.length;
+  int getWriteLength() => message!.length;
 
   @override
   String toString() =>
-      'Payload: {${message.length} bytes={${bytesToString(message)}';
+      'Payload: {${message!.length} bytes={${bytesToString(message!)}';
 
   /// Converts an array of bytes to a byte string.
   static String bytesToString(typed.Uint8Buffer message) {

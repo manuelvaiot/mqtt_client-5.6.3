@@ -16,7 +16,7 @@ part of mqtt_client;
 /// The MQTT connection class for the websocket interface
 class MqttWsConnection extends MqttConnection {
   /// Default constructor
-  MqttWsConnection(events.EventBus eventBus) : super(eventBus);
+  MqttWsConnection(events.EventBus? eventBus) : super(eventBus);
 
   /// Initializes a new instance of the MqttConnection class.
   MqttWsConnection.fromConnect(

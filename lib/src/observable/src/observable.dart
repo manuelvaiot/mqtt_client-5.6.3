@@ -25,7 +25,7 @@ abstract class Observable<C extends ChangeRecord> {
   /// Emits a list of changes when the state of the object changes.
   ///
   /// Changes should produced in order, if significant.
-  Stream<List<C>> get changes => _delegate.changes;
+  Stream<List<C>?> get changes => _delegate.changes;
 
   /// May override to be notified when [changes] is first observed.
   @protected
@@ -61,5 +61,5 @@ abstract class Observable<C extends ChangeRecord> {
   ///
   /// If there are no listeners to [changes], this method does nothing.
   @Deprecated('Use ChangeNotifier instead to have this method available')
-  void notifyChange([C change]) => _delegate.notifyChange(change);
+  void notifyChange([C? change]) => _delegate.notifyChange(change);
 }

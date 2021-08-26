@@ -25,10 +25,10 @@ class MqttUnsubscribePayload extends MqttPayload {
   }
 
   /// Variable header
-  MqttVariableHeader variableHeader;
+  MqttVariableHeader? variableHeader;
 
   /// Message header
-  MqttHeader header;
+  MqttHeader? header;
 
   /// The collection of subscriptions.
   List<String> subscriptions = <String>[];
@@ -43,7 +43,7 @@ class MqttUnsubscribePayload extends MqttPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     int payloadBytesRead = 0;
-    final int payloadLength = header.messageSize - variableHeader.length;
+    final int payloadLength = header!.messageSize - variableHeader!.length;
     // Read all the topics and qos subscriptions from the message payload
     while (payloadBytesRead < payloadLength) {
       final String topic = payloadStream.readMqttStringM();

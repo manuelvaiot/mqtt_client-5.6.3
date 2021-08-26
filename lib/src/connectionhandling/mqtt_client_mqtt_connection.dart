@@ -21,7 +21,7 @@ class ReadWrapper {
   }
 
   /// The bytes associated with the message being read.
-  List<int> messageBytes;
+  List<int>? messageBytes;
 }
 
 /// The MQTT connection base class
@@ -38,16 +38,16 @@ class MqttConnection {
   dynamic client;
 
   /// The read wrapper
-  ReadWrapper readWrapper;
+  ReadWrapper? readWrapper;
 
   ///The read buffer
-  MqttByteBuffer messageStream;
+  late MqttByteBuffer messageStream;
 
   /// Unsolicited disconnection callback
-  DisconnectCallback onDisconnected;
+  late DisconnectCallback onDisconnected;
 
   /// The event bus
-  final events.EventBus _clientEventBus;
+  final events.EventBus? _clientEventBus;
 
   /// Connect, must be overridden in connection classes
   Future<void> connect(String server, int port) {
@@ -78,7 +78,7 @@ class MqttConnection {
 
     while (messageStream.isMessageAvailable()) {
       bool messageIsValid = true;
-      MqttMessage msg;
+      MqttMessage? msg;
 
       try {
         msg = MqttMessage.createFrom(messageStream);
@@ -97,8 +97,8 @@ class MqttConnection {
       if (messageIsValid) {
         messageStream.shrink();
         MqttLogger.log('MqttConnection::_onData - message received $msg');
-        if (!_clientEventBus.streamController.isClosed) {
-          _clientEventBus.fire(MessageAvailable(msg));
+        if (!_clientEventBus!.streamController.isClosed) {
+          _clientEventBus!.fire(MessageAvailable(msg));
           MqttLogger.log('MqttConnection::_onData - message processed');
         } else {
           MqttLogger.log(

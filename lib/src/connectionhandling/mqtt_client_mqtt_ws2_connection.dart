@@ -17,17 +17,17 @@ part of mqtt_client;
 class _DetachedSocket extends Stream<Uint8List> implements Socket {
   _DetachedSocket(this._socket, this._subscription);
 
-  final StreamSubscription<Uint8List> _subscription;
+  final StreamSubscription<Uint8List>? _subscription;
   final Socket _socket;
 
   @override
-  StreamSubscription<Uint8List> listen(void Function(Uint8List event) onData,
-      {Function onError, void Function() onDone, bool cancelOnError}) {
+  StreamSubscription<Uint8List> listen(void Function(Uint8List event)? onData,
+      {Function? onError, void Function()? onDone, bool? cancelOnError}) {
     _subscription
       ..onData(onData)
       ..onError(onError)
       ..onDone(onDone);
-    return _subscription;
+    return _subscription!;
   }
 
   @override
@@ -37,23 +37,23 @@ class _DetachedSocket extends Stream<Uint8List> implements Socket {
   set encoding(Encoding value) => _socket.encoding = value;
 
   @override
-  void write(Object obj) => _socket.write(obj);
+  void write(Object? obj) => _socket.write(obj);
 
   @override
-  void writeln([Object obj = '']) => _socket.writeln(obj);
+  void writeln([Object? obj = '']) => _socket.writeln(obj);
 
   @override
   void writeCharCode(int charCode) => _socket.writeCharCode(charCode);
 
   @override
-  void writeAll(Iterable<Object> objects, [String separator = '']) =>
+  void writeAll(Iterable<Object?> objects, [String separator = '']) =>
       _socket.writeAll(objects, separator);
 
   @override
   void add(List<int> bytes) => _socket.add(bytes);
 
   @override
-  void addError(Object error, [StackTrace stackTrace]) =>
+  void addError(Object error, [StackTrace? stackTrace]) =>
       _socket.addError(error, stackTrace);
 
   @override
@@ -99,7 +99,7 @@ class _DetachedSocket extends Stream<Uint8List> implements Socket {
 /// The MQTT secure connection class
 class MqttWs2Connection extends MqttConnection {
   /// Default constructor
-  MqttWs2Connection(this.context, events.EventBus eventBus) : super(eventBus);
+  MqttWs2Connection(this.context, events.EventBus? eventBus) : super(eventBus);
 
   /// Initializes a new instance of the MqttWs2Connection class.
   MqttWs2Connection.fromConnect(
@@ -123,9 +123,9 @@ class MqttWs2Connection extends MqttConnection {
   List<String> protocols = protocolsMultipleDefault;
 
   /// The security context for secure usage
-  SecurityContext context;
+  SecurityContext? context;
 
-  StreamSubscription<dynamic> _subscription;
+  StreamSubscription<dynamic>? _subscription;
 
   /// Connect
   @override
@@ -161,7 +161,7 @@ class MqttWs2Connection extends MqttConnection {
         MqttLogger.log('MqttWs2Connection::connect - securing socket');
         _performWSHandshake(socket, uri).then((bool b) {
           client = WebSocket.fromUpgradedSocket(
-              _DetachedSocket(socket, _subscription),
+              _DetachedSocket(socket, _subscription as StreamSubscription<Uint8List>?),
               serverSide: false);
           readWrapper = ReadWrapper();
           messageStream = MqttByteBuffer(typed.Uint8Buffer());
@@ -220,7 +220,7 @@ class MqttWs2Connection extends MqttConnection {
         c.complete(true);
       }
     }, onDone: () {
-      _subscription.cancel();
+      _subscription!.cancel();
       const String message =
           'MqttWs2Connection::TLS connection unexpectedly closed';
       throw NoConnectionException(message);
@@ -229,7 +229,7 @@ class MqttWs2Connection extends MqttConnection {
   }
 }
 
-String _response;
+late String _response;
 bool _parseResponse(String resp, String key) {
   _response += resp;
   final int bodyOffset = _response.indexOf('\n\n');
@@ -262,7 +262,7 @@ bool _parseResponse(String resp, String key) {
   String body = '';
   // if we have a Content-Length key we can't stop till we read the body.
   if (headers.containsKey('content-length')) {
-    final int bodyLength = int.parse(headers['content-length']);
+    final int bodyLength = int.parse(headers['content-length']!);
     if (_response.length < bodyOffset + bodyLength + 2) {
       return true;
     }
@@ -277,12 +277,12 @@ bool _parseResponse(String resp, String key) {
   }
 
   if (!headers.containsKey('connection') ||
-      headers['connection'].toLowerCase() != 'upgrade') {
+      headers['connection']!.toLowerCase() != 'upgrade') {
     throw NoConnectionException(
         'MqttWs2Connection::server returned improper connection header line');
   }
   if (!headers.containsKey('upgrade') ||
-      headers['upgrade'].toLowerCase() != 'websocket') {
+      headers['upgrade']!.toLowerCase() != 'websocket') {
     throw NoConnectionException(
         'MqttWs2Connection::server returned improper upgrade header line');
   }

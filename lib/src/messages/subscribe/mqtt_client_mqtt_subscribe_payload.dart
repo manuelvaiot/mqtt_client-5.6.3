@@ -24,20 +24,20 @@ class MqttSubscribePayload extends MqttPayload {
   }
 
   /// Variable header
-  MqttVariableHeader variableHeader;
+  MqttVariableHeader? variableHeader;
 
   /// Message header
-  MqttHeader header;
+  MqttHeader? header;
 
   /// The collection of subscriptions, Key is the topic, Value is the qos
-  Map<String, MqttQos> subscriptions = <String, MqttQos>{};
+  Map<String?, MqttQos?> subscriptions = <String?, MqttQos?>{};
 
   /// Writes the payload to the supplied stream.
   @override
   void writeTo(MqttByteBuffer payloadStream) {
-    subscriptions.forEach((String key, MqttQos value) {
-      payloadStream.writeMqttStringM(key);
-      payloadStream.writeByte(value.index);
+    subscriptions.forEach((String? key, MqttQos? value) {
+      payloadStream.writeMqttStringM(key!);
+      payloadStream.writeByte(value!.index);
     });
   }
 
@@ -45,7 +45,7 @@ class MqttSubscribePayload extends MqttPayload {
   @override
   void readFrom(MqttByteBuffer payloadStream) {
     int payloadBytesRead = 0;
-    final int payloadLength = header.messageSize - variableHeader.length;
+    final int payloadLength = header!.messageSize - variableHeader!.length;
     // Read all the topics and qos subscriptions from the message payload
     while (payloadBytesRead < payloadLength) {
       final String topic = payloadStream.readMqttStringM();
@@ -61,8 +61,8 @@ class MqttSubscribePayload extends MqttPayload {
   int getWriteLength() {
     int length = 0;
     final MqttEncoding enc = MqttEncoding();
-    subscriptions.forEach((String key, MqttQos value) {
-      length += enc.getByteCount(key);
+    subscriptions.forEach((String? key, MqttQos? value) {
+      length += enc.getByteCount(key!);
       length += 1;
     });
     return length;
@@ -82,7 +82,7 @@ class MqttSubscribePayload extends MqttPayload {
   String toString() {
     final StringBuffer sb = StringBuffer();
     sb.writeln('Payload: Subscription [{${subscriptions.length}}]');
-    subscriptions.forEach((String key, MqttQos value) {
+    subscriptions.forEach((String? key, MqttQos? value) {
       sb.writeln('{{ Topic={$key}, Qos={$value} }}');
     });
     return sb.toString();

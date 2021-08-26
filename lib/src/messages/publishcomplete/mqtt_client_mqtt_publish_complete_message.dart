@@ -29,18 +29,18 @@ class MqttPublishCompleteMessage extends MqttMessage {
 
   /// Gets or sets the variable header contents. Contains extended
   /// metadata about the message
-  MqttPublishCompleteVariableHeader variableHeader;
+  late MqttPublishCompleteVariableHeader variableHeader;
 
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength(), messageStream);
+    header!.writeTo(variableHeader.getWriteLength(), messageStream);
     variableHeader.writeTo(messageStream);
   }
 
   /// Sets the message identifier of the MqttMessage.
   // ignore: avoid_returning_this
-  MqttPublishCompleteMessage withMessageIdentifier(int messageIdentifier) {
+  MqttPublishCompleteMessage withMessageIdentifier(int? messageIdentifier) {
     variableHeader.messageIdentifier = messageIdentifier;
     return this;
   }

@@ -31,7 +31,7 @@ class MqttConnectAckMessage extends MqttMessage {
 
   /// Gets or sets the variable header contents. Contains extended
   /// metadata about the message
-  MqttConnectAckVariableHeader variableHeader;
+  late MqttConnectAckVariableHeader variableHeader;
 
   /// Reads a message from the supplied stream.
   @override
@@ -43,7 +43,7 @@ class MqttConnectAckMessage extends MqttMessage {
   /// Writes a message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    header.writeTo(variableHeader.getWriteLength(), messageStream);
+    header!.writeTo(variableHeader.getWriteLength(), messageStream);
     variableHeader.writeTo(messageStream);
   }
 

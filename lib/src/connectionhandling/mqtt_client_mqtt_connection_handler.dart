@@ -19,7 +19,7 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
   MqttConnectionHandler();
 
   /// The connection
-  dynamic connection;
+  late dynamic connection;
 
   /// Registry of message processors
   Map<MqttMessageType, MessageCallbackFunction> messageProcessorRegistry =
@@ -49,27 +49,27 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
   bool useAlternateWebSocketImplementation = false;
 
   /// User supplied websocket protocols
-  List<String> websocketProtocols;
+  List<String>? websocketProtocols;
 
   /// If set use a secure connection, note TCP only, not websocket.
   bool secure = false;
 
   /// The security context for secure usage
-  SecurityContext securityContext;
+  SecurityContext? securityContext;
 
   /// Successful connection callback
-  ConnectCallback onConnected;
+  ConnectCallback? onConnected;
 
   /// Unsolicited disconnection callback
-  DisconnectCallback onDisconnected;
+  DisconnectCallback? onDisconnected;
 
   /// Callback function to handle bad certificate. if true, ignore the error.
-  bool Function(X509Certificate certificate) onBadCertificate;
+  bool Function(X509Certificate certificate)? onBadCertificate;
 
   /// Connect to the specific Mqtt Connection.
   @override
   Future<MqttClientConnectionStatus> connect(
-      String server, int port, MqttConnectMessage message) async {
+      String server, int? port, MqttConnectMessage message) async {
     try {
       await internalConnect(server, port, message);
       return connectionStatus;
@@ -81,7 +81,7 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
 
   /// Connect to the specific Mqtt Connection.
   Future<MqttClientConnectionStatus> internalConnect(
-      String hostname, int port, MqttConnectMessage message);
+      String hostname, int? port, MqttConnectMessage message);
 
   /// Sends a message to the broker through the current connection.
   @override
@@ -144,7 +144,7 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
   /// handling non connection messages.
   void messageAvailable(MessageAvailable event) {
     final MessageCallbackFunction callback =
-        messageProcessorRegistry[event.message.header.messageType];
+        messageProcessorRegistry[event.message!.header!.messageType!]!;
     callback(event.message);
   }
 }
