@@ -23,7 +23,7 @@ class _DetachedSocket extends Stream<Uint8List> implements Socket {
   @override
   StreamSubscription<Uint8List> listen(void Function(Uint8List event)? onData,
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
-    _subscription
+    _subscription!
       ..onData(onData)
       ..onError(onError)
       ..onDone(onDone);
