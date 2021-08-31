@@ -11,7 +11,7 @@ dependencies:
  event_bus: ^2.0.0
  path: ^1.8.0
  crypto: ^3.0.1
- meta: ^1.7.0
+ meta:
 
 dev_dependencies:
  mockito: ^5.0.15
